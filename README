@@ -1,0 +1,3 @@
+Manually download Exhibit 12 from https://www.census.gov/foreign-trade/Press-Release/current_press_release/index.html
+Add Exhibit 12 to trade_data folder
+Run tariff_trade_pipeline.py and it will use the MTS API to grab montly customs duties revenues. Then it will create three csvs: , monthly customs duties revenues, monthly effective tariff rates (customs duties revenues / goods imports), cumulative goods trade balance
