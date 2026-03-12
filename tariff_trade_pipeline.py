@@ -372,7 +372,6 @@ def build_outputs(mts: pd.DataFrame, trade: pd.DataFrame, trade_sa: pd.DataFrame
     pivot_for_datawrapper(duties, "customs_duties_bn").to_csv(p1)
     print(f"  → {p1.name}")
 
-    # ── CSV 2: Effective tariff rate
    # ── CSV 2: Effective tariff rate (time series — one row per month)
     rate_df = merged.dropna(subset=["customs_duties_bn", "goods_imports_bop_bn"]).copy()
     rate_df["Effective Tariff Rate"] = (
