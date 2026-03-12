@@ -373,15 +373,17 @@ def build_outputs(mts: pd.DataFrame, trade: pd.DataFrame, trade_sa: pd.DataFrame
     print(f"  → {p1.name}")
 
     # ── CSV 2: Effective tariff rate
-    # customs_duties_mn (millions, from MTS) / goods_imports_bop_mn (millions, from exh12)
-    # Units cancel — result is a pure ratio × 100 = percent
-    rate_df = merged.dropna(subset=["customs_duties_mn", "goods_imports_bop_mn"]).copy()
-    rate_df["effective_tariff_rate_pct"] = (
-        rate_df["customs_duties_mn"] / rate_df["goods_imports_bop_mn"] * 100
+   # ── CSV 2: Effective tariff rate (time series — one row per month)
+    rate_df = merged.dropna(subset=["customs_duties_bn", "goods_imports_bop_bn"]).copy()
+    rate_df["Effective Tariff Rate"] = (
+        rate_df["customs_duties_bn"] / rate_df["goods_imports_bop_bn"] * 100
     ).round(4)
+    rate_df = rate_df.sort_values(["year", "month"])
+    rate_df["Date"] = rate_df["month"].map(MONTH_LABELS) + " " + rate_df["year"].astype(int).astype(str)
+    rate_ts = rate_df[["Date", "Effective Tariff Rate"]].reset_index(drop=True)
     p2 = OUTPUT_DIR / "effective_tariff_rate.csv"
-    pivot_for_datawrapper(rate_df, "effective_tariff_rate_pct").to_csv(p2)
-    print(f"  → {p2.name}")
+    rate_ts.to_csv(p2, index=False)
+    print(f"  Wrote: {p2.name}")
 
     # ── CSV 3: Cumulative goods trade balance (SA if available, else NSA)
     if trade_sa is not None and not trade_sa.empty:
